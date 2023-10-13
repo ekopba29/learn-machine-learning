@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import os
+import urllib.parse
 
 current_dir = os.path.dirname(__file__)
 model_dir = os.path.join(current_dir, 'model')
@@ -28,7 +29,7 @@ def predict():
         return jsonify({'err': 'missing parameter query text -> ?text='})
 
     model = tf.keras.models.load_model(model_dir)
-    prediction = model.predict([input_text])
+    prediction = model.predict([urllib.parse.unquote(input_text)])
     result = {'tingkat sarkas ': f'{float(prediction[0][0]*100):.2f}%'}
 
     return jsonify(result)
